@@ -86,7 +86,16 @@ fun AppNavigator() {
         }
         navigation(startDestination = Screen.AdminDashboard.route, route = Screen.AdminFlow.route) {
             composable(Screen.AdminDashboard.route) {
-                AdminOrderDashboardScreen()
+                AdminOrderDashboardScreen(
+                    onNavigateToMenuManagement = { navController.navigate(Screen.MenuManagement.route) },
+                    onLogout = {
+                        navController.navigate(Screen.CustomerFlow.route) {
+                            popUpTo(Screen.AdminFlow.route) {
+                                inclusive = true
+                            }
+                        }
+                    }
+                )
             }
             composable(Screen.MenuManagement.route) {
                 MenuManagementScreen()
