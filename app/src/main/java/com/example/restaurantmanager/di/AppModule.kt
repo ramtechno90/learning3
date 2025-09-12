@@ -2,24 +2,24 @@ package com.example.restaurantmanager.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.example.restaurantmanager.data.local.AppDatabase
 import com.example.restaurantmanager.data.local.dao.CategoryDao
 import com.example.restaurantmanager.data.local.dao.MenuItemDao
 import com.example.restaurantmanager.data.local.dao.OrderDao
+import com.example.restaurantmanager.data.local.model.Category
+import com.example.restaurantmanager.data.local.model.MenuItem
 import com.example.restaurantmanager.data.repository.RestaurantRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
-
-import com.example.restaurantmanager.data.local.model.Category
-import com.example.restaurantmanager.data.local.model.MenuItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Provider
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -29,7 +29,7 @@ object AppModule {
     @Singleton
     fun provideAppDatabase(
         @ApplicationContext context: Context,
-        provider: Provider<AppDatabase.Callback>
+        provider: Provider<RoomDatabase.Callback>
     ): AppDatabase {
         return Room.databaseBuilder(
             context,
@@ -43,12 +43,12 @@ object AppModule {
     @Provides
     @Singleton
     fun provideDatabaseCallback(
-        db: Provider<AppDatabase>
-    ): AppDatabase.Callback {
-        return object : AppDatabase.Callback() {
+        dbProvider: Provider<AppDatabase>
+    ): RoomDatabase.Callback {
+        return object : RoomDatabase.Callback() {
             override fun onCreate(db: androidx.sqlite.db.SupportSQLiteDatabase) {
                 super.onCreate(db)
-                val database = db.get()
+                val database = dbProvider.get()
                 CoroutineScope(Dispatchers.IO).launch {
                     // Add Categories
                     val categoryDao = database.categoryDao()
