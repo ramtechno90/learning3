@@ -88,20 +88,41 @@ fun OrderCard(order: Order, onUpdateStatus: (Order, String) -> Unit) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text("Order #${order.id}", style = MaterialTheme.typography.titleMedium)
-            Text("Customer: ${order.customer_name}")
-            Text("Total: ₹${order.total}")
-            Text("Items: ${order.items}") // This will be a JSON string. A better implementation would parse it.
-            Row {
-                when (order.status) {
-                    "Pending" -> {
-                        Button(onClick = { onUpdateStatus(order, "Accepted") }) { Text("Accept") }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Button(onClick = { onUpdateStatus(order, "Rejected") }) { Text("Reject") }
+        BoxWithConstraints {
+            val showVerticalLayout = maxWidth < 360.dp
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text("Order #${order.id}", style = MaterialTheme.typography.titleMedium)
+                Text("Customer: ${order.customer_name}")
+                Text("Total: ₹${order.total}")
+                Text("Items: ${order.items}") // This will be a JSON string. A better implementation would parse it.
+                if (showVerticalLayout) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        when (order.status) {
+                            "Pending" -> {
+                                Button(onClick = { onUpdateStatus(order, "Accepted") }) { Text("Accept") }
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Button(onClick = { onUpdateStatus(order, "Rejected") }) { Text("Reject") }
+                            }
+                            "Accepted" -> {
+                                Button(onClick = { onUpdateStatus(order, "Completed") }) { Text("Complete") }
+                            }
+                        }
                     }
-                    "Accepted" -> {
-                        Button(onClick = { onUpdateStatus(order, "Completed") }) { Text("Complete") }
+                } else {
+                    Row {
+                        when (order.status) {
+                            "Pending" -> {
+                                Button(onClick = { onUpdateStatus(order, "Accepted") }) { Text("Accept") }
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Button(onClick = { onUpdateStatus(order, "Rejected") }) { Text("Reject") }
+                            }
+                            "Accepted" -> {
+                                Button(onClick = { onUpdateStatus(order, "Completed") }) { Text("Complete") }
+                            }
+                        }
                     }
                 }
             }

@@ -95,24 +95,43 @@ fun MenuItemCard(menuItem: MenuItem, onAddToCart: () -> Unit) {
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .animateContentSize()
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(text = menuItem.name, style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = menuItem.description, style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+        BoxWithConstraints {
+            val showVerticalLayout = maxWidth < 360.dp
+            Column(
+                modifier = Modifier.padding(16.dp)
             ) {
-                Text(text = "₹${menuItem.price}", style = MaterialTheme.typography.bodyLarge)
-                Button(
-                    onClick = onAddToCart,
-                    enabled = menuItem.in_stock
-                ) {
-                    Text(text = if (menuItem.in_stock) "Add to Cart" else "Out of Stock")
+                Text(text = menuItem.name, style = MaterialTheme.typography.titleMedium)
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(text = menuItem.description, style = MaterialTheme.typography.bodyMedium)
+                Spacer(modifier = Modifier.height(8.dp))
+                if (showVerticalLayout) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        Text(text = "₹${menuItem.price}", style = MaterialTheme.typography.bodyLarge)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Button(
+                            onClick = onAddToCart,
+                            enabled = menuItem.in_stock
+                        ) {
+                            Text(text = if (menuItem.in_stock) "Add to Cart" else "Out of Stock")
+                        }
+                    }
+                } else {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(text = "₹${menuItem.price}", style = MaterialTheme.typography.bodyLarge)
+                        Button(
+                            onClick = onAddToCart,
+                            enabled = menuItem.in_stock
+                        ) {
+                            Text(text = if (menuItem.in_stock) "Add to Cart" else "Out of Stock")
+                        }
+                    }
                 }
             }
         }
