@@ -1,21 +1,14 @@
 package com.example.restaurantmanager.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.example.restaurantmanager.ui.admin.screen.AdminOrderDashboardScreen
-import com.example.restaurantmanager.ui.admin.screen.MenuManagementScreen
-import com.example.restaurantmanager.ui.customer.screen.CartScreen
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.restaurantmanager.ui.admin.screen.AdminLoginScreen
 import com.example.restaurantmanager.ui.admin.screen.AdminOrderDashboardScreen
 import com.example.restaurantmanager.ui.admin.screen.MenuManagementScreen

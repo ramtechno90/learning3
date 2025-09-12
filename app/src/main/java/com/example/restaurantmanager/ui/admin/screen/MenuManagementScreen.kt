@@ -75,7 +75,7 @@ fun MenuManagementScreen(
                 menuItem = menuItem,
                 onUpdate = viewModel::updateMenuItem,
                 onDelete = viewModel::deleteMenuItem,
-                onEdit = { editingMenuItem = it }
+                onEdit = { editingMenuItem = menuItem }
             )
         }
 
@@ -90,7 +90,7 @@ fun MenuManagementScreen(
             CategoryManagementCard(
                 category = category,
                 onDelete = viewModel::deleteCategory,
-                onRename = { editingCategory = it }
+                onRename = { editingCategory = category }
             )
         }
     }
