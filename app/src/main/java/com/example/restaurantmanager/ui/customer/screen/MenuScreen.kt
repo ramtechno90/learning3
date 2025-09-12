@@ -47,19 +47,28 @@ fun MenuScreen(
             }
         }
     ) { paddingValues ->
+        val expandedCategories = remember { mutableStateMapOf<String, Boolean>() }
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
             menuItems.forEach { (category, items) ->
+                val isExpanded = expandedCategories.getOrPut(category) { true }
                 item {
-                    CategoryHeader(category)
+                    CategoryHeader(
+                        category = category,
+                        isExpanded = isExpanded,
+                        onToggle = { expandedCategories[category] = !isExpanded }
+                    )
                 }
-                items(items) { menuItem ->
-                    MenuItemCard(menuItem, onAddToCart = {
-                        cartViewModel.addItem(menuItem)
-                    })
+                if (isExpanded) {
+                    items(items) { menuItem ->
+                        MenuItemCard(menuItem, onAddToCart = {
+                            cartViewModel.addItem(menuItem)
+                        })
+                    }
                 }
             }
         }
@@ -67,13 +76,11 @@ fun MenuScreen(
 }
 
 @Composable
-fun CategoryHeader(category: String) {
-    var expanded by remember { mutableStateOf(true) }
-
+fun CategoryHeader(category: String, isExpanded: Boolean, onToggle: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { expanded = !expanded }
+            .clickable(onClick = onToggle)
             .padding(16.dp)
     ) {
         Text(text = category, style = MaterialTheme.typography.titleLarge)

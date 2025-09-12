@@ -59,10 +59,25 @@ object AppModule {
 
                     // Add Menu Items
                     val menuItemDao = database.menuItemDao()
+                    // Starters
                     menuItemDao.insert(MenuItem(name = "Paneer Tikka", description = "Grilled cottage cheese cubes", price = 250.0, category = "Starters"))
+                    menuItemDao.insert(MenuItem(name = "Veg Seekh Kebab", description = "Minced vegetables on skewers", price = 220.0, category = "Starters"))
+                    menuItemDao.insert(MenuItem(name = "Chicken 65", description = "Spicy fried chicken", price = 280.0, category = "Starters"))
+
+                    // Main Course
                     menuItemDao.insert(MenuItem(name = "Chicken Biryani", description = "Aromatic rice dish with chicken", price = 350.0, category = "Main Course"))
+                    menuItemDao.insert(MenuItem(name = "Palak Paneer", description = "Cottage cheese in spinach gravy", price = 300.0, category = "Main Course"))
+                    menuItemDao.insert(MenuItem(name = "Mutton Rogan Josh", description = "Aromatic lamb curry", price = 450.0, category = "Main Course"))
+
+                    // Desserts
                     menuItemDao.insert(MenuItem(name = "Gulab Jamun", description = "Sweet milk dumplings", price = 100.0, category = "Desserts"))
+                    menuItemDao.insert(MenuItem(name = "Rasmalai", description = "Spongy cheese dumplings in milk", price = 120.0, category = "Desserts"))
+                    menuItemDao.insert(MenuItem(name = "Gajar Ka Halwa", description = "Carrot pudding", price = 150.0, category = "Desserts"))
+
+                    // Beverages
                     menuItemDao.insert(MenuItem(name = "Coke", description = "Cold drink", price = 40.0, category = "Beverages", parcel_charge = 5.0))
+                    menuItemDao.insert(MenuItem(name = "Fresh Lime Soda", description = "Refreshing lemon drink", price = 60.0, category = "Beverages"))
+                    menuItemDao.insert(MenuItem(name = "Masala Chai", description = "Spiced tea", price = 50.0, category = "Beverages"))
                 }
             }
         }

@@ -14,7 +14,9 @@ import com.example.restaurantmanager.ui.admin.viewmodel.AdminOrderViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminOrderDashboardScreen(
-    viewModel: AdminOrderViewModel = hiltViewModel()
+    viewModel: AdminOrderViewModel = hiltViewModel(),
+    onNavigateToMenuManagement: () -> Unit,
+    onLogout: () -> Unit
 ) {
     var tabIndex by remember { mutableStateOf(0) }
     val tabs = listOf("Pending", "Accepted", "Completed", "Rejected")
@@ -26,7 +28,17 @@ fun AdminOrderDashboardScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Admin Dashboard") })
+            TopAppBar(
+                title = { Text("Admin Dashboard") },
+                actions = {
+                    TextButton(onClick = onNavigateToMenuManagement) {
+                        Text("Menu")
+                    }
+                    TextButton(onClick = onLogout) {
+                        Text("Logout")
+                    }
+                }
+            )
         }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
