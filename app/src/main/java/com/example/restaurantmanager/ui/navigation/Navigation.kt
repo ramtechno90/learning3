@@ -1,14 +1,13 @@
 package com.example.restaurantmanager.ui.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
+import androidx.navigation.compose.navArgument
 import com.example.restaurantmanager.ui.admin.screen.AdminLoginScreen
 import com.example.restaurantmanager.ui.admin.screen.AdminOrderDashboardScreen
 import com.example.restaurantmanager.ui.admin.screen.MenuManagementScreen
@@ -17,6 +16,10 @@ import com.example.restaurantmanager.ui.customer.screen.MenuScreen
 import com.example.restaurantmanager.ui.customer.screen.OrderConfirmationScreen
 import com.example.restaurantmanager.ui.customer.screen.ThankYouScreen
 import com.example.restaurantmanager.ui.customer.viewmodel.CartViewModel
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.navigation
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
 sealed class Screen(val route: String) {
     object CustomerFlow : Screen("customer_flow")
@@ -33,10 +36,18 @@ sealed class Screen(val route: String) {
     object MenuManagement : Screen("menu_management")
 }
 
+@OptIn(com.google.accompanist.navigation.animation.ExperimentalAnimationApi::class)
 @Composable
 fun AppNavigator() {
-    val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Screen.CustomerFlow.route) {
+    val navController = rememberAnimatedNavController()
+    AnimatedNavHost(
+        navController = navController,
+        startDestination = Screen.CustomerFlow.route,
+        enterTransition = { fadeIn(animationSpec = tween(300)) },
+        exitTransition = { fadeOut(animationSpec = tween(300)) },
+        popEnterTransition = { fadeIn(animationSpec = tween(300)) },
+        popExitTransition = { fadeOut(animationSpec = tween(300)) }
+    ) {
         navigation(startDestination = Screen.Menu.route, route = Screen.CustomerFlow.route) {
             composable(Screen.Menu.route) {
                 val cartViewModel: CartViewModel = hiltViewModel(
@@ -76,7 +87,10 @@ fun AppNavigator() {
                     }
                 )
             }
-            composable(Screen.ThankYou.route) { backStackEntry ->
+            composable(
+                Screen.ThankYou.route,
+                arguments = listOf(navArgument("orderId") { type = NavType.IntType })
+            ) { backStackEntry ->
                 val orderId = backStackEntry.arguments?.getInt("orderId") ?: 0
                 ThankYouScreen(orderId = orderId)
             }

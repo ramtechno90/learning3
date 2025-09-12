@@ -1,11 +1,15 @@
 package com.example.restaurantmanager.ui.customer.screen
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AdminPanelSettings
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -33,8 +37,8 @@ fun MenuScreen(
             TopAppBar(
                 title = { Text("Menu") },
                 actions = {
-                    TextButton(onClick = onNavigateToAdmin) {
-                        Text("Admin")
+                    IconButton(onClick = onNavigateToAdmin) {
+                        Icon(Icons.Filled.AdminPanelSettings, contentDescription = "Admin Panel")
                     }
                 }
             )
@@ -52,7 +56,8 @@ fun MenuScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(paddingValues),
+            contentPadding = PaddingValues(vertical = 8.dp)
         ) {
             menuItems.forEach { (category, items) ->
                 val isExpanded = expandedCategories.getOrPut(category) { true }
@@ -77,13 +82,18 @@ fun MenuScreen(
 
 @Composable
 fun CategoryHeader(category: String, isExpanded: Boolean, onToggle: () -> Unit) {
-    Column(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onToggle)
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = category, style = MaterialTheme.typography.titleLarge)
+        Text(text = category, style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
+        Icon(
+            imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+            contentDescription = if (isExpanded) "Collapse" else "Expand"
+        )
     }
 }
 
@@ -93,7 +103,9 @@ fun MenuItemCard(menuItem: MenuItem, onAddToCart: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
-            .animateContentSize()
+            .animateContentSize(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
     ) {
         BoxWithConstraints {
             val showVerticalLayout = maxWidth < 360.dp
@@ -111,7 +123,7 @@ fun MenuItemCard(menuItem: MenuItem, onAddToCart: () -> Unit) {
                     ) {
                         Text(text = "₹${menuItem.price}", style = MaterialTheme.typography.bodyLarge)
                         Spacer(modifier = Modifier.height(8.dp))
-                        Button(
+                        FilledTonalButton(
                             onClick = onAddToCart,
                             enabled = menuItem.in_stock
                         ) {
@@ -125,7 +137,7 @@ fun MenuItemCard(menuItem: MenuItem, onAddToCart: () -> Unit) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(text = "₹${menuItem.price}", style = MaterialTheme.typography.bodyLarge)
-                        Button(
+                        FilledTonalButton(
                             onClick = onAddToCart,
                             enabled = menuItem.in_stock
                         ) {
