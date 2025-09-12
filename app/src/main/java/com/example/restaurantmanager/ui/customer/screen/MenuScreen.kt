@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AdminPanelSettings
+import androidx.compose.material.icons.Icons.Default.AdminPanelSettings
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -91,7 +91,7 @@ fun CategoryHeader(category: String, isExpanded: Boolean, onToggle: () -> Unit) 
     ) {
         Text(text = category, style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
         Icon(
-            imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+            imageVector = if (isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
             contentDescription = if (isExpanded) "Collapse" else "Expand"
         )
     }

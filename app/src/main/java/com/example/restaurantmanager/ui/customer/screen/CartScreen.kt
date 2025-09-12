@@ -162,7 +162,7 @@ fun QuantitySelector(
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         FilledTonalIconButton(onClick = { onQuantityChanged(quantity - 1) }) {
-            Icon(Icons.Default.Remove, contentDescription = "Decrease quantity")
+            Icon(Icons.Filled.Remove, contentDescription = "Decrease quantity")
         }
         Text(
             text = quantity.toString(),
