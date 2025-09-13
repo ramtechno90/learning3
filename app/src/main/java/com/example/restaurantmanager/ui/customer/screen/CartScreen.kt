@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.HorizontalRule
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -162,7 +162,7 @@ fun QuantitySelector(
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         FilledTonalIconButton(onClick = { onQuantityChanged(quantity - 1) }) {
-            Icon(Icons.Filled.Remove, contentDescription = "Decrease quantity")
+            Icon(Icons.Filled.HorizontalRule, contentDescription = "Decrease quantity")
         }
         Text(
             text = quantity.toString(),

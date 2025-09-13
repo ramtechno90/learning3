@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.Icons.Default.AdminPanelSettings
+import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -38,7 +38,7 @@ fun MenuScreen(
                 title = { Text("Menu") },
                 actions = {
                     IconButton(onClick = onNavigateToAdmin) {
-                        Icon(Icons.Filled.AdminPanelSettings, contentDescription = "Admin Panel")
+                        Icon(Icons.Filled.Security, contentDescription = "Admin Panel")
                     }
                 }
             )
