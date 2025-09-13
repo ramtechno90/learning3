@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.HorizontalRule
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -161,16 +160,16 @@ fun QuantitySelector(
     onQuantityChanged: (Int) -> Unit
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        FilledTonalIconButton(onClick = { onQuantityChanged(quantity - 1) }) {
-            Icon(Icons.Filled.HorizontalRule, contentDescription = "Decrease quantity")
+        IconButton(onClick = { onQuantityChanged(quantity - 1) }) {
+            Text("-")
         }
         Text(
             text = quantity.toString(),
             modifier = Modifier.padding(horizontal = 16.dp),
             style = MaterialTheme.typography.bodyLarge
         )
-        FilledTonalIconButton(onClick = { onQuantityChanged(quantity + 1) }) {
-            Icon(Icons.Default.Add, contentDescription = "Increase quantity")
+        IconButton(onClick = { onQuantityChanged(quantity + 1) }) {
+            Text("+")
         }
     }
 }
