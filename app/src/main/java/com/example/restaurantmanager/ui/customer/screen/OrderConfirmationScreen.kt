@@ -3,15 +3,19 @@ package com.example.restaurantmanager.ui.customer.screen
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.restaurantmanager.data.local.model.CartItem
+import com.example.restaurantmanager.data.local.model.MenuItem
 import com.example.restaurantmanager.ui.customer.viewmodel.CartViewModel
 import com.example.restaurantmanager.ui.customer.viewmodel.OrderViewModel
+import com.example.restaurantmanager.ui.theme.RestaurantManagerTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -22,27 +26,49 @@ fun OrderConfirmationScreen(
 ) {
     var customerName by remember { mutableStateOf("") }
 
+    OrderConfirmationScreenContent(
+        customerName = customerName,
+        onCustomerNameChange = { customerName = it },
+        cartItems = cartViewModel.cartItems,
+        subtotal = cartViewModel.subtotal,
+        parcelCharges = cartViewModel.parcelCharges,
+        grandTotal = cartViewModel.grandTotal,
+        onPlaceOrder = {
+            orderViewModel.placeOrder(
+                customerName = customerName,
+                cartItems = cartViewModel.cartItems,
+                total = cartViewModel.grandTotal,
+                onOrderPlaced = { orderId ->
+                    cartViewModel.clear()
+                    onPlaceOrder(orderId)
+                }
+            )
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun OrderConfirmationScreenContent(
+    customerName: String,
+    onCustomerNameChange: (String) -> Unit,
+    cartItems: List<CartItem>,
+    subtotal: Double,
+    parcelCharges: Double,
+    grandTotal: Double,
+    onPlaceOrder: () -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Confirm Order") })
         },
         bottomBar = {
             Button(
-                onClick = {
-                    orderViewModel.placeOrder(
-                        customerName = customerName,
-                        cartItems = cartViewModel.cartItems,
-                        total = cartViewModel.grandTotal,
-                        onOrderPlaced = { orderId ->
-                            cartViewModel.clear()
-                            onPlaceOrder(orderId)
-                        }
-                    )
-                },
+                onClick = onPlaceOrder,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                enabled = customerName.isNotBlank() && cartViewModel.cartItems.isNotEmpty()
+                enabled = customerName.isNotBlank() && cartItems.isNotEmpty()
             ) {
                 Text("Place Order")
             }
@@ -57,7 +83,7 @@ fun OrderConfirmationScreen(
         ) {
             OutlinedTextField(
                 value = customerName,
-                onValueChange = { customerName = it },
+                onValueChange = onCustomerNameChange,
                 label = { Text("Your Name") },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -69,7 +95,7 @@ fun OrderConfirmationScreen(
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text("Order Summary", style = MaterialTheme.typography.titleLarge)
                     Spacer(modifier = Modifier.height(16.dp))
-                    cartViewModel.cartItems.forEach { cartItem ->
+                    cartItems.forEach { cartItem ->
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
@@ -84,14 +110,14 @@ fun OrderConfirmationScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text("Subtotal:")
-                        Text("₹${cartViewModel.subtotal}")
+                        Text("₹${subtotal}")
                     }
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text("Parcel Charges:")
-                        Text("₹${cartViewModel.parcelCharges}")
+                        Text("₹${parcelCharges}")
                     }
                     Divider(modifier = Modifier.padding(vertical = 8.dp))
                     Row(
@@ -99,10 +125,40 @@ fun OrderConfirmationScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text("Grand Total:", style = MaterialTheme.typography.titleLarge)
-                        Text("₹${cartViewModel.grandTotal}", style = MaterialTheme.typography.titleLarge)
+                        Text("₹${grandTotal}", style = MaterialTheme.typography.titleLarge)
                     }
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun OrderConfirmationScreenPreview() {
+    RestaurantManagerTheme {
+        val cartItems = listOf(
+            CartItem(
+                menuItem = MenuItem(id = 1, name = "Paneer Tikka", description = "Grilled cottage cheese cubes marinated in spices", price = 250.0, category = "Starters", in_stock = true),
+                dineInQuantity = 1,
+                takeawayQuantity = 1,
+                instructions = "Make it spicy"
+            ),
+            CartItem(
+                menuItem = MenuItem(id = 3, name = "Dal Makhani", description = "Creamy black lentils cooked with butter and spices", price = 300.0, category = "Main Course", in_stock = true),
+                dineInQuantity = 2,
+                takeawayQuantity = 0,
+                instructions = ""
+            )
+        )
+        OrderConfirmationScreenContent(
+            customerName = "John Doe",
+            onCustomerNameChange = {},
+            cartItems = cartItems,
+            subtotal = 850.0,
+            parcelCharges = 20.0,
+            grandTotal = 870.0,
+            onPlaceOrder = {}
+        )
     }
 }

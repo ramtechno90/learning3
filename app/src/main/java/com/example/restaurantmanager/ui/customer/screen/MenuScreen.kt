@@ -14,11 +14,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.restaurantmanager.data.local.model.MenuItem
 import com.example.restaurantmanager.ui.customer.viewmodel.CartViewModel
 import com.example.restaurantmanager.ui.customer.viewmodel.MenuViewModel
+import com.example.restaurantmanager.ui.theme.RestaurantManagerTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,6 +33,24 @@ fun MenuScreen(
     val menuItems by menuViewModel.menuItems.collectAsState()
     val cartItemCount = cartViewModel.cartItems.size
 
+    MenuScreenContent(
+        menuItems = menuItems,
+        cartItemCount = cartItemCount,
+        onNavigateToCart = onNavigateToCart,
+        onNavigateToAdmin = onNavigateToAdmin,
+        onAddToCart = { cartViewModel.addItem(it) }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MenuScreenContent(
+    menuItems: Map<String, List<MenuItem>>,
+    cartItemCount: Int,
+    onNavigateToCart: () -> Unit,
+    onNavigateToAdmin: () -> Unit,
+    onAddToCart: (MenuItem) -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -70,7 +90,7 @@ fun MenuScreen(
                 if (isExpanded) {
                     items(items) { menuItem ->
                         MenuItemCard(menuItem, onAddToCart = {
-                            cartViewModel.addItem(menuItem)
+                            onAddToCart(menuItem)
                         })
                     }
                 }
@@ -146,5 +166,29 @@ fun MenuItemCard(menuItem: MenuItem, onAddToCart: () -> Unit) {
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MenuScreenPreview() {
+    RestaurantManagerTheme {
+        val menuItems = mapOf(
+            "Starters" to listOf(
+                MenuItem(id = 1, name = "Paneer Tikka", description = "Grilled cottage cheese cubes marinated in spices", price = 250.0, category = "Starters", in_stock = true),
+                MenuItem(id = 2, name = "Chilli Potato", description = "Crispy fried potatoes tossed in a spicy sauce", price = 180.0, category = "Starters", in_stock = true)
+            ),
+            "Main Course" to listOf(
+                MenuItem(id = 3, name = "Dal Makhani", description = "Creamy black lentils cooked with butter and spices", price = 300.0, category = "Main Course", in_stock = true),
+                MenuItem(id = 4, name = "Shahi Paneer", description = "Cottage cheese cubes in a rich and creamy gravy", price = 350.0, category = "Main Course", in_stock = false)
+            )
+        )
+        MenuScreenContent(
+            menuItems = menuItems,
+            cartItemCount = 2,
+            onNavigateToCart = {},
+            onNavigateToAdmin = {},
+            onAddToCart = {}
+        )
     }
 }

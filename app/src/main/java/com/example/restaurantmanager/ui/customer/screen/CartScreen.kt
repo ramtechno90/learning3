@@ -4,15 +4,17 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.restaurantmanager.data.local.model.CartItem
+import com.example.restaurantmanager.data.local.model.MenuItem
 import com.example.restaurantmanager.ui.customer.viewmodel.CartViewModel
+import com.example.restaurantmanager.ui.theme.RestaurantManagerTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -22,6 +24,32 @@ fun CartScreen(
 ) {
     val cartItems = cartViewModel.cartItems
 
+    CartScreenContent(
+        cartItems = cartItems,
+        subtotal = cartViewModel.subtotal,
+        parcelCharges = cartViewModel.parcelCharges,
+        grandTotal = cartViewModel.grandTotal,
+        onNavigateToCheckout = onNavigateToCheckout,
+        onDineInQuantityChanged = { cartItem, quantity -> cartViewModel.onDineInQuantityChanged(cartItem, quantity) },
+        onTakeawayQuantityChanged = { cartItem, quantity -> cartViewModel.onTakeawayQuantityChanged(cartItem, quantity) },
+        onInstructionsChanged = { cartItem, instructions -> cartViewModel.onInstructionsChanged(cartItem, instructions) },
+        onRemoveItem = { cartViewModel.removeItem(it) }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CartScreenContent(
+    cartItems: List<CartItem>,
+    subtotal: Double,
+    parcelCharges: Double,
+    grandTotal: Double,
+    onNavigateToCheckout: () -> Unit,
+    onDineInQuantityChanged: (CartItem, Int) -> Unit,
+    onTakeawayQuantityChanged: (CartItem, Int) -> Unit,
+    onInstructionsChanged: (CartItem, String) -> Unit,
+    onRemoveItem: (CartItem) -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Your Cart") })
@@ -40,14 +68,14 @@ fun CartScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text("Subtotal:")
-                            Text("₹${cartViewModel.subtotal}")
+                            Text("₹${subtotal}")
                         }
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text("Parcel Charges:")
-                            Text("₹${cartViewModel.parcelCharges}")
+                            Text("₹${parcelCharges}")
                         }
                         Divider(modifier = Modifier.padding(vertical = 8.dp))
                         Row(
@@ -55,7 +83,7 @@ fun CartScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text("Grand Total:", style = MaterialTheme.typography.titleLarge)
-                            Text("₹${cartViewModel.grandTotal}", style = MaterialTheme.typography.titleLarge)
+                            Text("₹${grandTotal}", style = MaterialTheme.typography.titleLarge)
                         }
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(
@@ -78,10 +106,10 @@ fun CartScreen(
             items(cartItems) { cartItem ->
                 CartItemCard(
                     cartItem = cartItem,
-                    onDineInQuantityChanged = { quantity -> cartViewModel.onDineInQuantityChanged(cartItem, quantity) },
-                    onTakeawayQuantityChanged = { quantity -> cartViewModel.onTakeawayQuantityChanged(cartItem, quantity) },
-                    onInstructionsChanged = { instructions -> cartViewModel.onInstructionsChanged(cartItem, instructions) },
-                    onRemoveItem = { cartViewModel.removeItem(cartItem) }
+                    onDineInQuantityChanged = { quantity -> onDineInQuantityChanged(cartItem, quantity) },
+                    onTakeawayQuantityChanged = { quantity -> onTakeawayQuantityChanged(cartItem, quantity) },
+                    onInstructionsChanged = { instructions -> onInstructionsChanged(cartItem, instructions) },
+                    onRemoveItem = { onRemoveItem(cartItem) }
                 )
             }
         }
@@ -171,5 +199,37 @@ fun QuantitySelector(
         IconButton(onClick = { onQuantityChanged(quantity + 1) }) {
             Text("+")
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CartScreenPreview() {
+    RestaurantManagerTheme {
+        val cartItems = listOf(
+            CartItem(
+                menuItem = MenuItem(id = 1, name = "Paneer Tikka", description = "Grilled cottage cheese cubes marinated in spices", price = 250.0, category = "Starters", in_stock = true),
+                dineInQuantity = 1,
+                takeawayQuantity = 1,
+                instructions = "Make it spicy"
+            ),
+            CartItem(
+                menuItem = MenuItem(id = 3, name = "Dal Makhani", description = "Creamy black lentils cooked with butter and spices", price = 300.0, category = "Main Course", in_stock = true),
+                dineInQuantity = 2,
+                takeawayQuantity = 0,
+                instructions = ""
+            )
+        )
+        CartScreenContent(
+            cartItems = cartItems,
+            subtotal = 850.0,
+            parcelCharges = 20.0,
+            grandTotal = 870.0,
+            onNavigateToCheckout = {},
+            onDineInQuantityChanged = { _, _ -> },
+            onTakeawayQuantityChanged = { _, _ -> },
+            onInstructionsChanged = { _, _ -> },
+            onRemoveItem = {}
+        )
     }
 }
